@@ -45,12 +45,14 @@ public class ServerVoiceEvents {
         CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((player, packet) -> {
             Voicechat.LOGGER.info("Received secret request of {} ({})", player.getName().getString(), packet.getCompatibilityVersion());
             clientCompatibilities.put(player.getUUID(), packet.getCompatibilityVersion());
-            if (!isCompatible(player)) {
-                Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName().getString(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
-                player.sendSystemMessage(getIncompatibleMessage(packet.getCompatibilityVersion()));
-            } else {
-                initializePlayerConnection(player);
+                    if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
+                        Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={}) - allowing connection", player.getName().getString(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
+                    }
+
+                    initializePlayerConnection(player);
             }
+
+            initializePlayerConnection(player);
         });
     }
 
